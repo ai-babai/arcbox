@@ -21,6 +21,7 @@ created: "2026-11-07"
   <a href="https://github.com/ai-babai/arcbox/releases/latest"><strong>Download for macOS</strong></a>
   &nbsp; · &nbsp; <a href="docs/README.ru.md">Русский</a>
   &nbsp; · &nbsp; <a href="docs/DEVELOPMENT.md">Build from source</a>
+  &nbsp; · &nbsp; <a href="#contact">Contact</a>
 </p>
 
 ![Arcbox welcome screen with visible EN/RU switch](docs/assets/welcome-en-dark.jpg)
@@ -143,6 +144,15 @@ Build with Xcode Command Line Tools / Swift 5.9+ on macOS. The first build downl
 This is an early release. In-place archive editing, RAR creation and recovery records are not implemented. Extraction rejects links, unsafe paths and names that conflict on macOS. The default extraction limit is 20 GiB; the CLI can change it. A raw part set without a manifest cannot prove that its last part is present. Full details are in the [Russian guide](docs/README.ru.md).
 
 The universal binaries compile for both architectures. Runtime verification was performed on Apple Silicon; a physical Intel Mac has not been tested. The release is not Apple-notarized.
+
+## Contact
+
+For questions, feedback or collaboration, contact the maintainer:
+
+- Telegram: [@SkifMax](https://t.me/SkifMax)
+- Email: [wip.maks.craft@yandex.com](mailto:wip.maks.craft@yandex.com)
+
+For reproducible bugs, [open an issue](https://github.com/ai-babai/arcbox/issues). For security reports, follow the [security policy](SECURITY.md).
 
 ## License
 

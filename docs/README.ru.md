@@ -11,6 +11,8 @@ created: "2026-11-07"
 
 [Скачать для macOS](https://github.com/ai-babai/arcbox/releases/latest)
 
+[Связаться с автором](#контакты)
+
 Локальный архиватор для macOS с нативным интерфейсом, CLI JSON и MCP.
 SwiftUI/AppKit + общий Swift core + официальный 7-Zip 26.05.
 
@@ -197,6 +199,15 @@ Exit code: 0 успех, 1 ошибка операции, 2 неверные а�
   устанавливается macOS quarantine по возможности.
 - CLI/MCP запускают те же операции, но не управляют состоянием открытого окна.
 - Системные диалоги используют язык macOS, собственный интерфейс переключается между EN/RU.
+
+## Контакты
+
+По вопросам, предложениям и сотрудничеству пиши автору:
+
+- Telegram: [@SkifMax](https://t.me/SkifMax)
+- Почта: [wip.maks.craft@yandex.com](mailto:wip.maks.craft@yandex.com)
+
+Для воспроизводимых ошибок есть [Issues](https://github.com/ai-babai/arcbox/issues). Об уязвимостях сообщай по [политике безопасности](../SECURITY.md).
 
 ## Источники и лицензии
 

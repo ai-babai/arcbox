@@ -18,3 +18,5 @@ Bug reports and focused pull requests are welcome. Issues and discussions in Eng
 - New persistent tests, fixtures, CI checks or external services need explicit maintainer approval.
 
 For a bug report, include macOS version, chip architecture, Arcbox version, archive format and minimal reproduction steps. A synthetic example is preferable to a personal archive.
+
+For questions or collaboration, contact the maintainer through [Telegram or email](README.md#contact). English and Russian are welcome.
