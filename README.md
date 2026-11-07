@@ -23,7 +23,7 @@ created: "2026-11-07"
   &nbsp; · &nbsp; <a href="docs/DEVELOPMENT.md">Build from source</a>
 </p>
 
-![Arcbox showing an archive in dark mode](docs/assets/archive-en-dark.jpg)
+![Arcbox welcome screen with visible EN/RU switch](docs/assets/welcome-en-dark.jpg)
 
 ## Install
 
@@ -70,13 +70,6 @@ Missing a volume? Arcbox names the expected file. Put it beside the others and c
 - Background operations with animated loading feedback, elapsed time, cancellation and a Finder shortcut to the result.
 - A compact creation sheet with optional password protection, adaptive height and pinned action buttons.
 - Local processing, no account, cloud service or application telemetry.
-
-<details>
-<summary><strong>The welcome screen, with the sidebar hidden</strong></summary>
-
-![Centered Arcbox welcome screen](docs/assets/welcome-en-dark.jpg)
-
-</details>
 
 | Shortcut | Action |
 | :--- | :--- |

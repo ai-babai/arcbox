@@ -23,6 +23,8 @@ open dist/Arcbox.app
 
 The pinned engine download is checked against SHA-256 in the build script. `vendor/`, `.build/` and `dist/` are generated and ignored. No package manager or runtime installation is needed on the receiving Mac.
 
+The app bundle is assembled and signature-verified in staging before replacing the previous build. Executables inside an open build are not overwritten in place. Relaunch after building to load the new code.
+
 ## Localization
 
 English is the default app and documentation language. The toolbar offers a visible EN/RU switch; View → Language also offers an explicit system-language option. The preference is stored locally.

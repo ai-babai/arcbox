@@ -14,7 +14,7 @@ created: "2026-11-07"
 Локальный архиватор для macOS с нативным интерфейсом, CLI JSON и MCP.
 SwiftUI/AppKit + общий Swift core + официальный 7-Zip 26.05.
 
-![Arcbox на русском в светлой теме](assets/archive-ru-light.jpg)
+![Arcbox на русском с переключателем EN/RU](assets/welcome-ru-dark.jpg)
 
 ## Установка
 
@@ -79,13 +79,6 @@ Cmd+F переводит фокус в поиск.
 <summary><strong>Форма создания со всеми параметрами</strong></summary>
 
 ![Компактная форма создания архива](assets/create-ru.jpg)
-
-</details>
-
-<details>
-<summary><strong>Стартовый экран без боковой панели</strong></summary>
-
-![Стартовый экран Arcbox по центру](assets/welcome-ru-dark.jpg)
 
 </details>
 
