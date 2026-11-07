@@ -25,7 +25,7 @@ The pinned engine download is checked against SHA-256 in the build script. `vend
 
 ## Localization
 
-English is the default documentation language. The app follows the system language with English fallback, and offers English/Russian overrides in View → Language. The preference is stored locally.
+English is the default app and documentation language. The toolbar offers a visible EN/RU switch; View → Language also offers an explicit system-language option. The preference is stored locally.
 
 Messages use `L(key, arguments...)` and matching catalogs in `Sources/ArcboxCore/Resources/{en,ru}.lproj/Localizable.strings`. Keys are the original Russian source phrases. Both translations must keep identical printf placeholders. The resource bundle must be copied into the application's Resources directory; do not rely on a local SwiftPM build path.
 

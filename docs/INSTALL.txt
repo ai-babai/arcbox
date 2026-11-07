@@ -1,4 +1,4 @@
-Arcbox 0.2.2
+Arcbox 0.2.3
 macOS 14 Sonoma or later · Apple Silicon and Intel
 
 INSTALL
@@ -26,7 +26,8 @@ USE
 Open: select an archive or any volume. Arcbox finds the rest.
 Create: choose files, format, and optionally Split into parts / Разделить на части.
 Extract: choose the output folder. Arcbox reads all parts automatically.
-English and Russian: View > Language. System dialog chrome follows macOS.
+English by default. Switch EN / RU in the toolbar; View > Language also offers System.
+System dialog chrome follows macOS.
 
 Sidebar: the button at the left of the toolbar or Control-Command-S.
 Agent tools: View/Вид > Инструменты агента, or Shift-Command-K.

@@ -193,3 +193,8 @@
 "файла" = "files";
 "файлов" = "files";
 "Защитить паролем" = "Protect with a password";
+"Ширина боковой панели" = "Sidebar width";
+"Ширина инспектора" = "Inspector width";
+"Потяни, чтобы изменить ширину. Двойной щелчок — сброс." = "Drag to resize. Double-click to reset.";
+"Исходные файлы остаются на месте." = "Original files stay in place.";
+"Прошло времени" = "Elapsed time";

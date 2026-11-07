@@ -5,6 +5,16 @@ created: "2026-11-07"
 ---
 # Changelog
 
+## 0.2.3 · 2026-11-07
+
+- Visible EN/RU language switch in the toolbar, on the welcome screen and inside archives.
+- Compact native titlebar with the application name on the left and actions on the right.
+- English is the default for fresh installations; explicit language choices remain saved.
+- Resizable sidebar and inspector with saved widths, wide drag targets, keyboard accessibility and double-click reset.
+- Both panels slide open/closed smoothly and respect Reduced Motion; the inspector's visibility is saved too.
+- Animated operation feedback for reading, checking, creating, extracting and preparing previews, with elapsed time and cancellation.
+- Archive-loading placeholders and smooth transitions to results; no invented completion percentages.
+
 ## 0.2.2 · 2026-11-07
 
 - Centered welcome screen, with or without the sidebar.

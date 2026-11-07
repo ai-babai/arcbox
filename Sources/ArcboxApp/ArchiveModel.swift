@@ -25,6 +25,15 @@ struct BrowserRow: Identifiable, Hashable {
     }
 }
 
+enum ArchiveActivity: String {
+    case reading = "Читаю архив…"
+    case checking = "Проверяю целостность…"
+    case extracting = "Распаковываю…"
+    case previewing = "Готовлю просмотр…"
+    case creating = "Создаю архив…"
+    var title: String { L(rawValue) }
+}
+
 @MainActor final class ArchiveModel: ObservableObject {
     @Published var archive: URL?
     @Published var info: ArchiveInfo?
@@ -32,7 +41,12 @@ struct BrowserRow: Identifiable, Hashable {
     @Published var folder = ""
     @Published var selection = Set<String>()
     @Published var busy = false
+    @Published private(set) var operationStarted: Date?
+    @Published private(set) var operationTarget: String?
+    @Published private(set) var cancelling = false
+    private var activity: ArchiveActivity?
     @Published var status = L("Готово к работе")
+    @Published private(set) var statusIcon = "checkmark.circle"
     @Published var error: String?
     @Published var resultURL: URL?
     @Published var recent: [String] = UserDefaults.standard.stringArray(forKey: "recentArchives") ?? []
@@ -43,7 +57,9 @@ struct BrowserRow: Identifiable, Hashable {
     @Published var passwordInput = ""
     @Published var createInputs: [URL] = []
     @Published var previewURL: URL?
-    @Published var showInspector = true
+    @Published var showInspector = UserDefaults.standard.object(forKey: "showInspector") as? Bool ?? true {
+        didSet { UserDefaults.standard.set(showInspector, forKey: "showInspector") }
+    }
     @Published var showSidebar = UserDefaults.standard.object(forKey: "showSidebar") as? Bool ?? true {
         didSet { UserDefaults.standard.set(showSidebar, forKey: "showSidebar") }
     }
@@ -100,7 +116,7 @@ struct BrowserRow: Identifiable, Hashable {
     private func load(created: OperationResult? = nil) {
         guard let archive else { return }
         let secret = password
-        perform(L("Читаю архив…"), retry: { self.load() }, work: { engine, token in
+        perform(.reading, retry: { self.load() }, work: { engine, token in
             try engine.list(archive, password: secret, token: token)
         }) { value in
             self.archive = URL(fileURLWithPath: value.path)
@@ -117,11 +133,11 @@ struct BrowserRow: Identifiable, Hashable {
         password = passwordInput; passwordInput = ""; showPassword = false
         let action = retry; retry = nil; action?()
     }
-    func cancelPassword() { passwordInput = ""; showPassword = false; retry = nil; status = L("Ввод пароля отменён") }
+    func cancelPassword() { passwordInput = ""; showPassword = false; retry = nil; statusIcon = "slash.circle"; status = L("Ввод пароля отменён") }
     func test() {
         guard let archive else { return }
         let secret = password
-        perform(L("Проверяю целостность…"), retry: { self.test() }, work: { engine, token in
+        perform(.checking, retry: { self.test() }, work: { engine, token in
             try engine.test(archive, password: secret, token: token)
         }) { result in self.status = L("Архив исправен. Проверено файлов: %@", String(describing: (result.files))) }
     }
@@ -146,7 +162,7 @@ struct BrowserRow: Identifiable, Hashable {
     private func extract(to destination: URL, paths: [String]) {
         guard let archive else { return }
         let secret = password
-        perform(L("Распаковываю…"), retry: { self.extract(to: destination, paths: paths) }, work: { engine, token in
+        perform(.extracting, target: destination.lastPathComponent, retry: { self.extract(to: destination, paths: paths) }, work: { engine, token in
             try engine.extract(archive, to: destination, entries: paths, password: secret, token: token)
         }) { result in
             self.resultURL = destination
@@ -163,7 +179,7 @@ struct BrowserRow: Identifiable, Hashable {
         guard row.size <= 50 * 1024 * 1024 else { error = L("Для просмотра распакуй файл: его размер больше 50 МБ."); return }
         let secret = password
         let destination = FileManager.default.temporaryDirectory.appendingPathComponent("Arcbox-preview-\(UUID().uuidString)")
-        perform(L("Готовлю просмотр…"), retry: { self.preview() }, work: { engine, token in
+        perform(.previewing, retry: { self.preview() }, work: { engine, token in
             try engine.extract(archive, to: destination, entries: [row.path], password: secret, limit: 51 * 1024 * 1024, token: token)
         }) { _ in
             self.previewRoots.append(destination)
@@ -190,7 +206,7 @@ struct BrowserRow: Identifiable, Hashable {
         guard panel.runModal() == .OK, let output = panel.url else { return }
         let inputs = createInputs
         showCreate = false
-        perform(L("Создаю архив…"), work: { engine, token in
+        perform(.creating, target: output.lastPathComponent, work: { engine, token in
             try engine.create(inputs: inputs, output: output, format: format, level: level, password: password, partBytes: partBytes, token: token)
         }) { result in
             self.archive = URL(fileURLWithPath: result.firstPart ?? result.path); self.password = password
@@ -217,30 +233,41 @@ struct BrowserRow: Identifiable, Hashable {
         }
         return nil
     }
-    func cancel() { status = L("Отменяю…"); token.cancel() }
+    func cancel() {
+        guard busy, !cancelling else { return }
+        cancelling = true; status = L("Отменяю…"); token.cancel()
+    }
     func cleanup() { token.cancel(); for root in previewRoots { try? FileManager.default.removeItem(at: root) } }
-    func copy(_ text: String) { NSPasteboard.general.clearContents(); NSPasteboard.general.setString(text, forType: .string); status = L("Скопировано") }
+    func copy(_ text: String) { NSPasteboard.general.clearContents(); NSPasteboard.general.setString(text, forType: .string); statusIcon = "doc.on.doc"; status = L("Скопировано") }
     func clearRecent() { recent = []; UserDefaults.standard.removeObject(forKey: "recentArchives") }
     func refreshLanguage() {
+        if busy { status = cancelling ? L("Отменяю…") : activity?.title ?? status; return }
+        statusIcon = "checkmark.circle"
         status = info.map { L("В архиве: %@", String(describing: (fileCount($0.fileCount)))) } ?? L("Готово к работе")
     }
     func recentName(_ path: String) -> String { volumeKey(URL(fileURLWithPath: path)) ?? (path as NSString).lastPathComponent }
     func retryOperation() { let action = retry; retry = nil; canRetry = false; error = nil; action?() }
-    private func perform<T: Sendable>(_ message: String, retry: (() -> Void)? = nil, work: @escaping @Sendable (ArchiveEngine, OperationToken) throws -> T, completion: @escaping (T) -> Void) {
+    private func perform<T: Sendable>(_ activity: ArchiveActivity, target: String? = nil, retry: (() -> Void)? = nil, work: @escaping @Sendable (ArchiveEngine, OperationToken) throws -> T, completion: @escaping (T) -> Void) {
         guard !busy else { return }
-        busy = true; error = nil; canRetry = false; resultURL = nil; status = message; token = OperationToken()
+        busy = true; cancelling = false; self.activity = activity
+        operationTarget = target ?? archive?.lastPathComponent
+        if operationStarted == nil { operationStarted = Date() }
+        error = nil; canRetry = false; resultURL = nil; status = activity.title; token = OperationToken()
         let operationToken = token
         Task {
             do {
                 let value = try await Task.detached(priority: .userInitiated) { try work(ArchiveEngine(), operationToken) }.value
-                busy = false; completion(value)
+                busy = false; statusIcon = "checkmark.circle"; completion(value)
+                if !busy { operationStarted = nil; operationTarget = nil; cancelling = false; self.activity = nil }
             } catch {
                 busy = false
+                operationStarted = nil; operationTarget = nil; cancelling = false; self.activity = nil
                 if (error as? ArcboxError)?.code == "password_required", let retry {
                     self.retry = retry; self.passwordInput = ""; self.showPassword = true
+                    statusIcon = "lock.circle"
                     status = L("Архив защищён паролем")
-                } else if (error as? ArcboxError)?.code == "cancelled" { status = L("Операция отменена") }
-                else { self.retry = retry; self.canRetry = retry != nil; self.error = error.localizedDescription; status = L("Не удалось завершить операцию") }
+                } else if (error as? ArcboxError)?.code == "cancelled" { statusIcon = "slash.circle"; status = L("Операция отменена") }
+                else { statusIcon = "exclamationmark.circle"; self.retry = retry; self.canRetry = retry != nil; self.error = error.localizedDescription; status = L("Не удалось завершить операцию") }
             }
         }
     }

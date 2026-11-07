@@ -37,6 +37,10 @@ The creation sheet grows only for enabled options, within the available screen h
 
 The empty archive browser centers its icon, message and Open action within the available content area. Hiding the sidebar recenters the group; the format notes remain a separate compact footer.
 
+EN/RU is visible in the toolbar; fresh installations start in English. Sidebar and inspector dividers offer an 8-point drag target, resize cursors, keyboard adjustment, and double-click width reset. Widths are bounded so that the file browser retains room, and preferences survive reopening panels and restarting the app. Both panels animate visibility changes, with Reduced Motion respected.
+
+Every noticeable wait must be visibly active. Shared operation feedback covers opening, integrity checks, creation, extraction and preview preparation: a truthful operation label, native indeterminate progress, elapsed time and cancellation. Opening an archive shows pulsing list placeholders; Reduced Motion leaves them static. Completion transitions into actual content or a result status. Cancellation stays visibly pending until the core returns after cleanup. Never replace missing progress data with an invented percentage.
+
 ## Recover from errors
 
 | Situation | Response |

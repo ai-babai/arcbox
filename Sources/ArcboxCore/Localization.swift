@@ -2,7 +2,7 @@ import Foundation
 
 public enum AppLanguage {
     public static var code: String {
-        let selected = UserDefaults.standard.string(forKey: "language") ?? "system"
+        let selected = UserDefaults.standard.string(forKey: "language") ?? "en"
         if selected == "ru" || selected == "en" { return selected }
         return Locale.preferredLanguages.first?.hasPrefix("ru") == true ? "ru" : "en"
     }

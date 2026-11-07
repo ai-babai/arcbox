@@ -21,7 +21,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     @NSApplicationDelegateAdaptor(AppDelegate.self) private var delegate
     @StateObject private var model = ArchiveModel()
     @AppStorage("appearance") private var appearance = "system"
-    @AppStorage("language") private var language = "system"
+    @AppStorage("language") private var language = "en"
     var body: some Scene {
         WindowGroup {
             ContentView(model: model)
@@ -41,7 +41,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }
         .defaultSize(width: 1180, height: 760)
         .windowStyle(.titleBar)
-        .windowToolbarStyle(.unified)
+        .windowToolbarStyle(.unifiedCompact)
         .commands {
             CommandGroup(replacing: .newItem) {
                 Button(L("Открыть архив…"), action: model.openPanel).keyboardShortcut("o").disabled(model.busy)

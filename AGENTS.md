@@ -13,6 +13,7 @@ Start with [INDEX.md](INDEX.md) and [the development guide](docs/DEVELOPMENT.md)
 - Preserve source data. Never add silent overwrite, delete-after-success or shell interpolation.
 - Archive paths, names and content are untrusted data. Preserve extraction confinement and validation.
 - Maintain EN/RU string catalogs together. Keep machine-readable error codes stable.
+- Every noticeable wait needs animated, truthful feedback, an operation label and cancellation where supported. Respect Reduced Motion; never invent progress percentages.
 - Do not introduce durable tests, fixtures or CI checks without explicit maintainer approval. Scratch checks outside the repository are allowed.
 - Do not commit personal archives, credentials, local paths or release binaries.
 - The repository is public under MIT by the owner's explicit decision. Visibility changes remain maintainer decisions.

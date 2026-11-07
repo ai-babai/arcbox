@@ -13,24 +13,39 @@ let arcboxIcon: NSImage = {
 struct ContentView: View {
     @ObservedObject var model: ArchiveModel
     @State private var targeted = false
+    @AppStorage("language") private var language = "en"
+    @AppStorage("sidebarWidth") private var sidebarWidth = 218.0
+    @AppStorage("inspectorWidth") private var inspectorWidth = 222.0
     @FocusState private var searchFocused: Bool
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     var body: some View {
-        HStack(spacing: 0) {
-            if model.showSidebar {
-                HStack(spacing: 0) {
-                    sidebar.frame(width: 218)
+        GeometryReader { geometry in
+            let widths = panelWidths(in: geometry.size.width)
+            HStack(spacing: 0) {
+                if model.showSidebar {
+                    HStack(spacing: 0) {
+                        sidebar.frame(width: widths.left)
+                        ResizableDivider(width: $sidebarWidth, actualWidth: widths.left,
+                            bounds: 184...min(360, max(184, geometry.size.width - 480 - widths.right - (widths.right > 0 ? 16 : 8))),
+                            defaultWidth: 218, direction: 1, label: L("Ширина боковой панели"))
+                    }.frame(width: widths.left + 8)
+                        .transition(.move(edge: .leading).combined(with: .opacity))
+                }
+                VStack(spacing: 0) {
+                    if model.info != nil {
+                        archiveContent(inspectorSize: widths.right,
+                            maximumInspectorSize: max(204, geometry.size.width - 480 - widths.left - (model.showSidebar ? 16 : 8)))
+                    } else if model.busy { ArchiveLoading(name: model.displayName).transition(.opacity) }
+                    else { welcome.transition(.opacity) }
                     Divider()
-                }.frame(width: 219)
-                    .transition(.move(edge: .leading).combined(with: .opacity))
+                    statusbar
+                }.background(Color(nsColor: .textBackgroundColor))
             }
-            VStack(spacing: 0) {
-                if model.info != nil { archiveContent } else { welcome }
-                Divider()
-                statusbar
-            }.background(Color(nsColor: .textBackgroundColor))
         }
         .animation(reduceMotion ? nil : .easeInOut(duration: 0.24), value: model.showSidebar)
+        .animation(reduceMotion ? nil : .easeInOut(duration: 0.24), value: model.showInspector)
+        .animation(reduceMotion ? nil : .easeInOut(duration: 0.18), value: model.busy)
+        .animation(reduceMotion ? nil : .easeInOut(duration: 0.18), value: model.info != nil)
         .clipped()
         .tint(accent)
         .frame(minWidth: 940, minHeight: 620)
@@ -66,6 +81,15 @@ struct ContentView: View {
         .background {
             Button("") { searchFocused = true }.keyboardShortcut("f").hidden()
         }
+    }
+
+    private func panelWidths(in total: CGFloat) -> (left: CGFloat, right: CGFloat) {
+        let hasInspector = model.info != nil && model.showInspector
+        let handles = (model.showSidebar ? 1 : 0) + (hasInspector ? 1 : 0)
+        let available = total - 480 - CGFloat(handles) * 8
+        let left = model.showSidebar ? min(max(184, min(360, CGFloat(sidebarWidth))), max(184, available - (hasInspector ? 204 : 0))) : 0
+        let right = hasInspector ? min(max(204, min(360, CGFloat(inspectorWidth))), max(204, available - left)) : 0
+        return (left, right)
     }
 
     private var sidebar: some View {
@@ -117,13 +141,20 @@ struct ContentView: View {
                 .help(model.showSidebar ? L("Скрыть боковую панель (⌃⌘S)") : L("Показать боковую панель (⌃⌘S)"))
                 .accessibilityLabel(model.showSidebar ? L("Скрыть боковую панель") : L("Показать боковую панель"))
         }
-        ToolbarItemGroup(placement: .navigation) {
+        ToolbarItemGroup(placement: .primaryAction) {
             Button(action: model.openPanel) { Label(L("Открыть"), systemImage: "folder").labelStyle(.titleAndIcon) }
                 .disabled(model.busy)
             Button(action: model.newArchive) { Label(L("Создать"), systemImage: "plus").labelStyle(.titleAndIcon) }
                 .disabled(model.busy)
             Button { model.extract(selected: false) } label: { Label(L("Распаковать"), systemImage: "arrow.down.to.line").labelStyle(.titleAndIcon) }
                 .disabled(model.info == nil || model.busy)
+        }
+        ToolbarItem(placement: .primaryAction) {
+            Picker(L("Язык"), selection: Binding(get: { AppLanguage.code }, set: { language = $0 })) {
+                Text("EN").tag("en")
+                Text("RU").tag("ru")
+            }.pickerStyle(.segmented).labelsHidden().frame(width: 88)
+                .help(L("Язык"))
         }
         ToolbarItem(placement: .primaryAction) {
             Button { model.showInspector.toggle() } label: { Label(L("Инспектор"), systemImage: "sidebar.right") }
@@ -168,7 +199,7 @@ struct ContentView: View {
         }.multilineTextAlignment(.center).frame(maxWidth: .infinity)
     }
 
-    private var archiveContent: some View {
+    private func archiveContent(inspectorSize: CGFloat, maximumInspectorSize: CGFloat) -> some View {
         VStack(spacing: 0) {
             archiveHeader
             Divider()
@@ -177,8 +208,16 @@ struct ContentView: View {
                     browserToolbar
                     fileTable
                 }.frame(maxWidth: .infinity)
-                if model.showInspector { Divider(); inspector.frame(width: 222) }
-            }
+                if model.showInspector {
+                    HStack(spacing: 0) {
+                        ResizableDivider(width: $inspectorWidth, actualWidth: inspectorSize,
+                            bounds: 204...min(360, maximumInspectorSize), defaultWidth: 222,
+                            direction: -1, label: L("Ширина инспектора"))
+                        inspector.frame(width: inspectorSize)
+                    }.frame(width: inspectorSize + 8)
+                        .transition(.move(edge: .trailing).combined(with: .opacity))
+                }
+            }.clipped()
         }
     }
     private var archiveHeader: some View {
@@ -286,12 +325,18 @@ struct ContentView: View {
         }.padding(.bottom, 25)
     }
     private var statusbar: some View {
+        Group {
+            if model.busy, let started = model.operationStarted {
+                OperationStatus(title: model.status, target: model.operationTarget, started: started, cancelling: model.cancelling, cancel: model.cancel)
+                    .transition(.opacity.combined(with: .move(edge: .bottom)))
+            } else { idleStatusbar.transition(.opacity) }
+        }
+    }
+    private var idleStatusbar: some View {
         HStack(spacing: 10) {
-            if model.busy { ProgressView().controlSize(.small).scaleEffect(0.7).frame(width: 14) }
-            else { Image(systemName: "checkmark.circle").foregroundStyle(.secondary) }
+            Image(systemName: model.statusIcon).foregroundStyle(.secondary)
             Text(model.status).lineLimit(1)
             Spacer()
-            if model.busy { Button(L("Отмена"), action: model.cancel).buttonStyle(.link) }
             if let result = model.resultURL {
                 Button(L("Показать в Finder")) { NSWorkspace.shared.activateFileViewerSelecting([result]) }.buttonStyle(.link)
             } else if !model.selection.isEmpty { Text(L("Выбрано: %@", String(describing: (model.selection.count)))).foregroundStyle(.secondary) }
