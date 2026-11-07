@@ -1,0 +1,7 @@
+executable: /bin/bash
+arguments:
+  - scripts/quality/mutation-tests.sh
+exclude:
+  - /Sources/ArcboxApp/
+  - /Sources/ArcboxCLI/
+testSuiteTimeout: 60

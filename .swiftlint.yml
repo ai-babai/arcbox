@@ -1,0 +1,24 @@
+included:
+  - Sources
+  - Tests
+only_rules:
+  - file_length
+  - function_body_length
+  - type_body_length
+  - force_cast
+  - force_try
+  - duplicate_conditions
+  - duplicate_enum_cases
+  - duplicate_imports
+  - identical_operands
+  - unused_optional_binding
+file_length:
+  warning: 500
+  error: 500
+  ignore_comment_only_lines: false
+function_body_length:
+  warning: 80
+  error: 80
+type_body_length:
+  warning: 450
+  error: 450

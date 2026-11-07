@@ -6,6 +6,7 @@ created: "2026-11-07"
 # Arcbox
 
 - [README](README.md) / [Русский](docs/README.ru.md): installation, features and automation.
+- [Quality contract](docs/QUALITY.md) / [Русский](docs/QUALITY.ru.md): principles, blocking gates, scope and contributor workflow.
 - [Development](docs/DEVELOPMENT.md): architecture, localization and release packaging.
 - [Product journey](docs/customer-journey.md): multipart work inside Open/Create/Extract.
 - [ArcboxCore](Sources/ArcboxCore): archive engine, parts, volume discovery and localization.

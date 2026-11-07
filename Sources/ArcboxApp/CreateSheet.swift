@@ -1,5 +1,5 @@
-import SwiftUI
 import ArcboxCore
+import SwiftUI
 
 private struct CreateContentHeight: PreferenceKey {
     static var defaultValue: CGFloat = 0
@@ -27,13 +27,15 @@ struct CreateSheet: View {
     }
     private var partBytes: Int64? {
         guard usesParts else { return nil }
-        let (value, overflow) = Int64(customPartSize ? (Int(customMiB) ?? 0) : sizes[Int(partIndex)]).multipliedReportingOverflow(by: 1024 * 1024)
+        let (value, overflow) = Int64(customPartSize ? (Int(customMiB) ?? 0) : sizes[Int(partIndex)])
+            .multipliedReportingOverflow(by: 1024 * 1024)
         return overflow ? 0 : value
     }
     private var invalid: Bool {
-        model.createInputs.isEmpty || (usesParts && (partBytes ?? 0) <= 0) ||
-        (supportsPassword && encrypted && password.isEmpty) ||
-        (format == "parts" && (model.createInputs.count != 1 || model.createInputs.first?.hasDirectoryPath == true))
+        model.createInputs.isEmpty || (usesParts && (partBytes ?? 0) <= 0)
+            || (supportsPassword && encrypted && password.isEmpty)
+            || (format == "parts"
+                && (model.createInputs.count != 1 || model.createInputs.first?.hasDirectoryPath == true))
     }
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
@@ -44,9 +46,10 @@ struct CreateSheet: View {
             }
             ScrollView {
                 form.padding(2).padding(.bottom, 4)
-                    .background(GeometryReader { proxy in
-                        Color.clear.preference(key: CreateContentHeight.self, value: proxy.size.height)
-                    })
+                    .background(
+                        GeometryReader { proxy in
+                            Color.clear.preference(key: CreateContentHeight.self, value: proxy.size.height)
+                        })
             }
             .scrollBounceBehavior(.basedOnSize)
             .frame(height: min(contentHeight, maximumContentHeight))
@@ -58,12 +61,16 @@ struct CreateSheet: View {
                 Button(L("Отмена")) { model.showCreate = false }.keyboardShortcut(.cancelAction)
                 Spacer()
                 Button(L("Создать…")) {
-                    model.create(format: format, level: supportsPassword ? level : 0,
-                                 password: supportsPassword && encrypted ? password : "", partBytes: partBytes)
+                    model.create(
+                        format: format, level: supportsPassword ? level : 0,
+                        password: supportsPassword && encrypted ? password : "", partBytes: partBytes)
                 }.buttonStyle(.borderedProminent).keyboardShortcut(.defaultAction).disabled(invalid)
             }
         }.font(.system(size: 13)).padding(24).frame(width: 540).tint(accent)
-            .dropDestination(for: URL.self) { urls, _ in model.createInputs = urls; return !urls.isEmpty }
+            .dropDestination(for: URL.self) { urls, _ in
+                model.createInputs = urls
+                return !urls.isEmpty
+            }
     }
 
     private var form: some View {
@@ -71,7 +78,9 @@ struct CreateSheet: View {
             VStack(alignment: .leading, spacing: 8) {
                 HStack {
                     Text(L("Файлы и папки")).fontWeight(.medium)
-                    if !model.createInputs.isEmpty { Text("\(model.createInputs.count)").monospacedDigit().foregroundStyle(.secondary) }
+                    if !model.createInputs.isEmpty {
+                        Text("\(model.createInputs.count)").monospacedDigit().foregroundStyle(.secondary)
+                    }
                     Spacer()
                     Button(L("Выбрать…"), action: model.chooseInputs)
                 }
@@ -96,7 +105,9 @@ struct CreateSheet: View {
                 VStack(alignment: .leading, spacing: 7) {
                     Text(L("Формат результата")).fontWeight(.medium)
                     Picker(L("Формат результата"), selection: $format) {
-                        Text("ZIP").tag("zip"); Text("7z").tag("7z"); Text("TAR").tag("tar")
+                        Text("ZIP").tag("zip")
+                        Text("7z").tag("7z")
+                        Text("TAR").tag("tar")
                         Divider()
                         Text(L("Части исходного файла (.001)")).tag("parts")
                     }.labelsHidden()
@@ -105,7 +116,9 @@ struct CreateSheet: View {
                     VStack(alignment: .leading, spacing: 7) {
                         Text(L("Сжатие")).fontWeight(.medium)
                         Picker(L("Сжатие"), selection: $level) {
-                            Text(L("Быстрее")).tag(1); Text(L("Баланс")).tag(5); Text(L("Меньше размер")).tag(9)
+                            Text(L("Быстрее")).tag(1)
+                            Text(L("Баланс")).tag(5)
+                            Text(L("Меньше размер")).tag(9)
                         }.labelsHidden()
                     }.frame(maxWidth: .infinity)
                 }
@@ -114,64 +127,92 @@ struct CreateSheet: View {
                 Text(L("Один файл без упаковки. При распаковке частей восстановится оригинал."))
                     .font(.system(size: 11)).foregroundStyle(.secondary).fixedSize(horizontal: false, vertical: true)
                 if model.createInputs.count > 1 || model.createInputs.first?.hasDirectoryPath == true {
-                    Text(L("Для этого режима выбери один файл. Для папок и нескольких файлов используй ZIP или 7z с разбиением."))
-                        .font(.system(size: 11)).foregroundStyle(.red).fixedSize(horizontal: false, vertical: true)
+                    Text(
+                        L(
+                            "Для этого режима выбери один файл. Для папок и нескольких файлов используй ZIP или 7z с разбиением."
+                        )
+                    )
+                    .font(.system(size: 11)).foregroundStyle(.red).fixedSize(horizontal: false, vertical: true)
                 }
             }
-            if supportsPassword {
-                VStack(alignment: .leading, spacing: 8) {
-                    HStack(spacing: 18) {
-                        Toggle(L("Защитить паролем"), isOn: $encrypted).frame(maxWidth: .infinity, alignment: .leading)
-                        if encrypted {
-                            SecureField(L("Пароль"), text: $password).textFieldStyle(.roundedBorder)
-                                .focused($passwordFocused).frame(maxWidth: .infinity)
-                        }
-                    }.onChange(of: encrypted) { _, enabled in passwordFocused = enabled }
+            passwordOptions
+            partsOptions
+        }
+    }
+    @ViewBuilder private var passwordOptions: some View {
+        if supportsPassword {
+            VStack(alignment: .leading, spacing: 8) {
+                HStack(spacing: 18) {
+                    Toggle(L("Защитить паролем"), isOn: $encrypted).frame(maxWidth: .infinity, alignment: .leading)
                     if encrypted {
-                        Text(format == "zip" ? L("AES-256. Нужен архиватор с поддержкой AES ZIP.") : L("Будут зашифрованы содержимое и имена файлов."))
-                            .font(.system(size: 11)).foregroundStyle(.secondary).fixedSize(horizontal: false, vertical: true)
+                        SecureField(L("Пароль"), text: $password).textFieldStyle(.roundedBorder)
+                            .focused($passwordFocused).frame(maxWidth: .infinity)
                     }
-                }
-            }
-            VStack(alignment: .leading, spacing: 10) {
-                if format != "parts" { Toggle(L("Разделить на части"), isOn: $divided) }
-                if usesParts {
-                    HStack {
-                        Text(L("Размер каждой части")).fontWeight(.medium)
-                        Spacer()
-                        Text(bytes(partBytes ?? 0)).monospacedDigit().foregroundStyle(.secondary)
-                    }
-                    VStack(spacing: 3) {
-                        Slider(value: $partIndex, in: 0...5, step: 1)
-                            .accessibilityLabel(L("Размер каждой части"))
-                            .accessibilityValue(bytes(Int64(sizes[Int(partIndex)]) * 1024 * 1024))
-                            .disabled(customPartSize)
-                        HStack(spacing: 0) {
-                            ForEach(sizes.indices, id: \.self) { index in
-                                Button { partIndex = Double(index); customPartSize = false } label: {
-                                    Text(bytes(Int64(sizes[index]) * 1024 * 1024))
-                                        .font(.system(size: 10, weight: Int(partIndex) == index && !customPartSize ? .semibold : .regular))
-                                        .foregroundStyle(Int(partIndex) == index && !customPartSize ? accent : .secondary)
-                                        .frame(maxWidth: .infinity)
-                                }.buttonStyle(.plain)
-                            }
-                        }
-                    }
-                    HStack {
-                        Toggle(L("Свой размер"), isOn: $customPartSize)
-                            .onChange(of: customPartSize) { _, enabled in
-                                if enabled { customMiB = String(sizes[Int(partIndex)]) }
-                            }
-                        Spacer()
-                        if customPartSize {
-                            TextField(L("Размер"), text: $customMiB).textFieldStyle(.roundedBorder).frame(width: 86)
-                            Text(L("МБ")).foregroundStyle(.secondary)
-                        }
-                    }
-                    Text(L("Все части сохранятся в одной папке. Последняя может быть меньше."))
-                        .font(.system(size: 11)).foregroundStyle(.secondary).fixedSize(horizontal: false, vertical: true)
+                }.onChange(of: encrypted) { _, enabled in passwordFocused = enabled }
+                if encrypted {
+                    Text(
+                        format == "zip"
+                            ? L("AES-256. Нужен архиватор с поддержкой AES ZIP.")
+                            : L("Будут зашифрованы содержимое и имена файлов.")
+                    )
+                    .font(.system(size: 11)).foregroundStyle(.secondary).fixedSize(
+                        horizontal: false, vertical: true)
                 }
             }
         }
     }
+
+    private var partsOptions: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            if format != "parts" { Toggle(L("Разделить на части"), isOn: $divided) }
+            if usesParts {
+                HStack {
+                    Text(L("Размер каждой части")).fontWeight(.medium)
+                    Spacer()
+                    Text(bytes(partBytes ?? 0)).monospacedDigit().foregroundStyle(.secondary)
+                }
+                VStack(spacing: 3) {
+                    Slider(value: $partIndex, in: 0...5, step: 1)
+                        .accessibilityLabel(L("Размер каждой части"))
+                        .accessibilityValue(bytes(Int64(sizes[Int(partIndex)]) * 1024 * 1024))
+                        .disabled(customPartSize)
+                    HStack(spacing: 0) {
+                        ForEach(sizes.indices, id: \.self) { index in
+                            Button {
+                                partIndex = Double(index)
+                                customPartSize = false
+                            } label: {
+                                Text(bytes(Int64(sizes[index]) * 1024 * 1024))
+                                    .font(
+                                        .system(
+                                            size: 10,
+                                            weight: Int(partIndex) == index && !customPartSize
+                                                ? .semibold : .regular)
+                                    )
+                                    .foregroundStyle(
+                                        Int(partIndex) == index && !customPartSize ? accent : .secondary
+                                    )
+                                    .frame(maxWidth: .infinity)
+                            }.buttonStyle(.plain)
+                        }
+                    }
+                }
+                HStack {
+                    Toggle(L("Свой размер"), isOn: $customPartSize)
+                        .onChange(of: customPartSize) { _, enabled in
+                            if enabled { customMiB = String(sizes[Int(partIndex)]) }
+                        }
+                    Spacer()
+                    if customPartSize {
+                        TextField(L("Размер"), text: $customMiB).textFieldStyle(.roundedBorder).frame(width: 86)
+                        Text(L("МБ")).foregroundStyle(.secondary)
+                    }
+                }
+                Text(L("Все части сохранятся в одной папке. Последняя может быть меньше."))
+                    .font(.system(size: 11)).foregroundStyle(.secondary).fixedSize(
+                        horizontal: false, vertical: true)
+            }
+        }
+    }
+
 }

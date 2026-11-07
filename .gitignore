@@ -3,3 +3,7 @@ dist/
 .DS_Store
 vendor/7zip/
 vendor/7zip.tar.xz
+
+__pycache__/
+
+.ruff_cache/
