@@ -22,4 +22,4 @@ The full upstream `License.txt` and `readme.txt` are included in every app at `C
 
 ## Apple frameworks
 
-SwiftUI, AppKit, Foundation, CryptoKit and Quick Look are supplied by macOS. No framework, font or SF Symbols asset is redistributed separately. The application icon is a generated raster asset. Its [provenance and prompt](docs/assets/README.md) are documented; `scripts/make-icon.swift` only builds the macOS icon sizes.
+SwiftUI, AppKit, Foundation, CryptoKit and Quick Look are supplied by macOS. No framework, font or SF Symbols asset is redistributed separately. The application icon is original SVG artwork, redrawn from an initial generated concept. Its [provenance and prompt](docs/assets/README.md) are documented; `scripts/make-icon.swift` renders the SVG into the macOS icon sizes.

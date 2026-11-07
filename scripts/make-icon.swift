@@ -1,8 +1,8 @@
 import AppKit
 
 let output = CommandLine.arguments[1]
-guard let artwork = NSImage(contentsOfFile: "Resources/AppIcon.png") else {
-    fatalError("Missing Resources/AppIcon.png")
+guard let artwork = NSImage(contentsOfFile: "Resources/AppIcon.svg") else {
+    fatalError("Missing Resources/AppIcon.svg")
 }
 let temporary = FileManager.default.temporaryDirectory.appendingPathComponent("arcbox-\(UUID().uuidString).iconset")
 try FileManager.default.createDirectory(at: temporary, withIntermediateDirectories: true)

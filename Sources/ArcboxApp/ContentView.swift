@@ -4,6 +4,12 @@ import QuickLookUI
 
 let accent = Color(red: 0.13, green: 0.49, blue: 0.39)
 
+let arcboxIcon: NSImage = {
+    if let url = Bundle.main.url(forResource: "Arcbox", withExtension: "icns"),
+       let image = NSImage(contentsOf: url) { return image }
+    return NSImage(named: NSImage.applicationIconName) ?? NSImage()
+}()
+
 struct ContentView: View {
     @ObservedObject var model: ArchiveModel
     @State private var targeted = false
@@ -65,7 +71,8 @@ struct ContentView: View {
     private var sidebar: some View {
         VStack(alignment: .leading, spacing: 0) {
             HStack(spacing: 10) {
-                Image(systemName: "archivebox.fill").font(.system(size: 25, weight: .medium)).foregroundStyle(accent)
+                Image(nsImage: arcboxIcon).resizable().interpolation(.high)
+                    .frame(width: 36, height: 36).accessibilityHidden(true)
                 Text("Arcbox").font(.system(size: 25, weight: .semibold, design: .rounded)).tracking(-0.8)
             }.padding(.top, 24).padding(.bottom, 24).padding(.horizontal, 24)
             Label(L("Архивы"), systemImage: "square.stack.3d.up")
@@ -128,8 +135,8 @@ struct ContentView: View {
     private var welcome: some View {
         VStack(alignment: .leading, spacing: 0) {
             Spacer(minLength: 28)
-            Image(systemName: "archivebox").font(.system(size: 52, weight: .ultraLight)).foregroundStyle(accent)
-                .frame(width: 94, height: 94).background(accent.opacity(0.07), in: RoundedRectangle(cornerRadius: 25))
+            Image(nsImage: arcboxIcon).resizable().interpolation(.high)
+                .frame(width: 94, height: 94).accessibilityHidden(true)
                 .padding(.bottom, 26)
             Text(L("Всё внутри.\nВсё под рукой.")).font(.system(size: 38, weight: .semibold)).tracking(-1.3).lineSpacing(1)
             Text(L("Открывай, собирай и распаковывай архивы."))

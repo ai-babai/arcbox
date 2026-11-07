@@ -6,6 +6,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     var model: ArchiveModel?
     var pending: URL?
     func applicationDidFinishLaunching(_ notification: Notification) {
+        NSApp.applicationIconImage = arcboxIcon
         NSApp.setActivationPolicy(.regular); NSApp.activate(ignoringOtherApps: true)
     }
     func application(_ application: NSApplication, open urls: [URL]) {

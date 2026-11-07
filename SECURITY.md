@@ -5,7 +5,9 @@ created: "2026-11-07"
 ---
 # Security
 
-Please report security issues to the maintainer through a private repository issue. Include the affected version, archive format, reproduction steps and expected behavior. Use a minimal non-sensitive reproduction; do not upload personal archives, passwords or credentials.
+Please use [GitHub's private vulnerability reporting](https://github.com/ai-babai/arcbox/security/advisories/new) for security issues. Do not post unpatched vulnerabilities in public issues. Include the affected version, archive format, reproduction steps and expected behavior. Use a minimal non-sensitive reproduction; do not upload personal archives, passwords or credentials.
+
+Для сообщения об уязвимости используй [закрытый отчёт GitHub](https://github.com/ai-babai/arcbox/security/advisories/new), а не публичный issue. Укажи версию и шаги воспроизведения без личных архивов и паролей.
 
 Arcbox processes untrusted archive metadata. It rejects traversal paths, links, ambiguous listings and conflicting names, confines extraction writes, validates the output, and uses new destinations. These measures are defense in depth, not a formal security audit. Keep the bundled engine updated through reviewed, checksum-pinned releases.
 

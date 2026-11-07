@@ -11,6 +11,7 @@ created: "2026-11-07"
 <p align="center"><strong>Your archives. Within reach.</strong></p>
 <p align="center">A native macOS archive manager for people and agents.<br>Open, create and extract, including multipart archives.</p>
 <p align="center">
+  <a href="https://github.com/ai-babai/arcbox/releases/latest"><img alt="Latest release" src="https://img.shields.io/github/v/release/ai-babai/arcbox?color=337C68"></a>
   <img alt="macOS 14 or later" src="https://img.shields.io/badge/macOS-14%2B-337C68?logo=apple&logoColor=white">
   <img alt="Apple Silicon and Intel" src="https://img.shields.io/badge/Universal-Apple%20Silicon%20%2B%20Intel-337C68">
   <img alt="English and Russian" src="https://img.shields.io/badge/Languages-EN%20%2F%20RU-337C68">
@@ -30,7 +31,7 @@ created: "2026-11-07"
 2. Open it and drag **Arcbox** into **Applications**.
 3. Launch Arcbox. No Homebrew, Swift, or separate archive tools are required.
 
-Requires **macOS 14 Sonoma or later**. The same download contains Apple Silicon and Intel binaries. The ZIP download contains the same application if you prefer that format. This repository and its downloads are private; your GitHub account needs access.
+Requires **macOS 14 Sonoma or later**. The same download contains Apple Silicon and Intel binaries. The ZIP download contains the same application if you prefer that format. Downloads are public and do not require a GitHub account.
 
 **First-launch note:** this release is signed ad hoc and **is not notarized by Apple**. If macOS blocks it, first verify the download, then follow Apple's per-app **System Settings → Privacy & Security → Open Anyway** flow. See [installation instructions](docs/INSTALL.txt) and [Apple's guidance](https://support.apple.com/102445). Do not disable Gatekeeper globally. A managed Mac may require administrator approval.
 
@@ -134,7 +135,7 @@ Tools: `arcbox_list`, `arcbox_test`, `arcbox_create`, `arcbox_extract`, `arcbox_
 
 Build with Xcode Command Line Tools / Swift 5.9+ on macOS. The first build downloads a pinned official 7-Zip archive, verifies its SHA-256, and bundles the engine. There are no third-party Swift package dependencies. Release packaging requires a Git commit so that `release-info.json` records the exact source revision.
 
-[Development guide](docs/DEVELOPMENT.md) · [Product journey](docs/customer-journey.en.md) · [Changelog](CHANGELOG.md) · [Security policy](SECURITY.md)
+[Development guide](docs/DEVELOPMENT.md) · [Product journey](docs/customer-journey.en.md) · [Contributing](CONTRIBUTING.md) · [Changelog](CHANGELOG.md) · [Security policy](SECURITY.md)
 
 ## Current boundaries
 

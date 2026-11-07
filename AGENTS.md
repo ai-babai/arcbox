@@ -15,4 +15,4 @@ Start with [INDEX.md](INDEX.md) and [the development guide](docs/DEVELOPMENT.md)
 - Maintain EN/RU string catalogs together. Keep machine-readable error codes stable.
 - Do not introduce durable tests, fixtures or CI checks without explicit maintainer approval. Scratch checks outside the repository are allowed.
 - Do not commit personal archives, credentials, local paths or release binaries.
-- Publication and release visibility are explicit maintainer decisions. The repository is private.
+- The repository is public under MIT by the owner's explicit decision. Visibility changes remain maintainer decisions.

@@ -5,6 +5,13 @@ created: "2026-11-07"
 ---
 # Changelog
 
+## 0.2.1 · 2026-11-07
+
+- Clean, flat SVG application icon without the generated surface texture.
+- The sidebar and welcome screen use the same artwork as the application bundle.
+- Refresh the running Dock icon from the bundled artwork on launch.
+- Public source and downloads under MIT, with English/Russian documentation and private vulnerability reporting.
+
 ## 0.2.0 · 2026-11-07
 
 - Native Open, Create and Extract workflows, including multipart archives.

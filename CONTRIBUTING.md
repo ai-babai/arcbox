@@ -5,7 +5,9 @@ created: "2026-11-07"
 ---
 # Contributing
 
-Read [AGENTS.md](AGENTS.md), [the development guide](docs/DEVELOPMENT.md) and [the product journey](docs/customer-journey.md).
+Read [AGENTS.md](AGENTS.md), [the development guide](docs/DEVELOPMENT.md) and [the product journey](docs/customer-journey.en.md).
+
+Bug reports and focused pull requests are welcome. Issues and discussions in English or Russian are welcome. By submitting a contribution, you agree to license it under the project's [MIT license](LICENSE).
 
 - Keep changes focused on observable user behavior.
 - Implement operation behavior once in ArcboxCore, then expose it consistently to GUI/CLI/MCP.
