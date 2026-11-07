@@ -68,7 +68,15 @@ Missing a volume? Arcbox names the expected file. Put it beside the others and c
 - Light, dark and system appearance; **English and Russian**, switchable in **View → Language**.
 - A sidebar that slides away as the file browser expands. Reduced Motion is respected.
 - Background archive operations, cancellation and a Finder shortcut to the result.
+- A compact creation sheet with optional password protection, adaptive height and pinned action buttons.
 - Local processing, no account, cloud service or application telemetry.
+
+<details>
+<summary><strong>The welcome screen, with the sidebar hidden</strong></summary>
+
+![Centered Arcbox welcome screen](docs/assets/welcome-en-dark.jpg)
+
+</details>
 
 | Shortcut | Action |
 | :--- | :--- |

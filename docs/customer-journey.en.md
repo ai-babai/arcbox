@@ -33,6 +33,10 @@ Inputs include numeric `.001/.002`, `.partNN.rar`, legacy `.rar/.r00`, split ZIP
 
 To split an existing file without archiving, choose **Original file parts (.001)**. It accepts one file. Open → Extract restores the original bytes.
 
+The creation sheet grows only for enabled options, within the available screen height. Format and compression share a row, password protection is optional, and a custom part size appears inline. Sources show two names and a remaining count; Choose reopens the full selection dialog. Cancel/Create stay outside the scroll area. Password protection requires a nonempty password before Create becomes available. Small screens scroll the form body while keeping its actions visible.
+
+The empty archive browser centers its icon, message and Open action within the available content area. Hiding the sidebar recenters the group; the format notes remain a separate compact footer.
+
 ## Recover from errors
 
 | Situation | Response |

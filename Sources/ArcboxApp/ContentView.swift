@@ -133,36 +133,39 @@ struct ContentView: View {
     }
 
     private var welcome: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            Spacer(minLength: 28)
-            Image(nsImage: arcboxIcon).resizable().interpolation(.high)
-                .frame(width: 94, height: 94).accessibilityHidden(true)
-                .padding(.bottom, 26)
-            Text(L("Всё внутри.\nВсё под рукой.")).font(.system(size: 38, weight: .semibold)).tracking(-1.3).lineSpacing(1)
-            Text(L("Открывай, собирай и распаковывай архивы."))
-                .font(.system(size: 14)).foregroundStyle(.secondary).padding(.top, 14)
-            Button(action: model.openPanel) {
-                HStack(spacing: 10) { Text(L("Открыть архив")); Image(systemName: "arrow.up.right") }
-                    .font(.system(size: 13, weight: .medium)).padding(.horizontal, 14).padding(.vertical, 8)
-            }.buttonStyle(.borderedProminent).disabled(model.busy).padding(.top, 28)
-            HStack(spacing: 7) {
-                Image(systemName: "cursorarrow.and.square.on.square.dashed")
-                Text(L("Или перетащи архив в окно"))
-            }.font(.system(size: 12)).foregroundStyle(.secondary).padding(.top, 17)
-            Spacer(minLength: 34)
-            Divider()
-            HStack(alignment: .top, spacing: 42) {
+        VStack(spacing: 0) {
+            Spacer(minLength: 24)
+            VStack(spacing: 0) {
+                Image(nsImage: arcboxIcon).resizable().interpolation(.high)
+                    .frame(width: 88, height: 88).accessibilityHidden(true)
+                    .padding(.bottom, 20)
+                Text(L("Всё внутри.\nВсё под рукой.")).font(.system(size: 36, weight: .semibold)).tracking(-1.1).lineSpacing(1)
+                    .multilineTextAlignment(.center)
+                Text(L("Открывай, собирай и распаковывай архивы."))
+                    .font(.system(size: 14)).foregroundStyle(.secondary).multilineTextAlignment(.center).padding(.top, 12)
+                Button(action: model.openPanel) {
+                    HStack(spacing: 10) { Text(L("Открыть архив")); Image(systemName: "arrow.up.right") }
+                        .font(.system(size: 13, weight: .medium)).padding(.horizontal, 14).padding(.vertical, 8)
+                }.buttonStyle(.borderedProminent).disabled(model.busy).padding(.top, 24)
+                HStack(spacing: 7) {
+                    Image(systemName: "cursorarrow.and.square.on.square.dashed")
+                    Text(L("Или перетащи архив в окно"))
+                }.font(.system(size: 12)).foregroundStyle(.secondary).padding(.top, 17)
+            }.frame(maxWidth: 560)
+            Spacer(minLength: 32)
+            Divider().frame(maxWidth: 600)
+            HStack(alignment: .top, spacing: 28) {
                 formatNote(L("ОТКРЫВАЕТ"), "ZIP, RAR, 7z, TAR…")
                 formatNote(L("СОЗДАЁТ"), "ZIP, 7z, TAR")
                 formatNote(L("ТВОИ ФАЙЛЫ"), L("Без облака и аккаунта"))
-            }.padding(.top, 20).padding(.bottom, 32)
-        }.padding(.horizontal, 56).frame(maxWidth: .infinity, alignment: .leading)
+            }.frame(maxWidth: 600).padding(.top, 20).padding(.bottom, 28)
+        }.padding(.horizontal, 40).frame(maxWidth: .infinity, maxHeight: .infinity)
     }
     private func formatNote(_ title: String, _ text: String) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(spacing: 8) {
             Text(title).font(.system(size: 9, weight: .semibold)).tracking(1).foregroundStyle(.secondary)
             Text(text).font(.system(size: 12))
-        }
+        }.multilineTextAlignment(.center).frame(maxWidth: .infinity)
     }
 
     private var archiveContent: some View {

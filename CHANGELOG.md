@@ -5,6 +5,13 @@ created: "2026-11-07"
 ---
 # Changelog
 
+## 0.2.2 · 2026-11-07
+
+- Centered welcome screen, with or without the sidebar.
+- Compact creation sheet: format and compression share a row; passwords are optional disclosure.
+- Source summaries and inline custom part sizes keep all options within a smaller form.
+- Content height follows the selected options and available screen height; action buttons stay outside the scroll area.
+
 ## 0.2.1 · 2026-11-07
 
 - Clean, flat SVG application icon without the generated surface texture.

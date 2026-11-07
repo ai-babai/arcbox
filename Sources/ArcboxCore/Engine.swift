@@ -1,7 +1,7 @@
 import Foundation
 
 public struct ArchiveEngine: Sendable {
-    public static let version = "0.2.1"
+    public static let version = "0.2.2"
     public static let defaultLimit: Int64 = 20 * 1024 * 1024 * 1024
     public let executable: URL
     public init(executable: URL? = nil) throws {

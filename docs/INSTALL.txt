@@ -1,4 +1,4 @@
-Arcbox 0.2.1
+Arcbox 0.2.2
 macOS 14 Sonoma or later · Apple Silicon and Intel
 
 INSTALL
