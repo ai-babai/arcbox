@@ -5,6 +5,13 @@ created: "2026-11-07"
 ---
 # Changelog
 
+## Unreleased
+
+- Publish an EN/RU quality contract for DRY, KISS, YAGNI and SOLID/SRP.
+- Enforce formatting, size/safety lint, cyclomatic/cognitive complexity, core CRAP(line), diff coverage, module boundaries and translation parity before commits and in GitHub.
+- Add behavioral, SwiftCheck property, CLI/MCP and quality-gate contract tests, plus a scoped Muter check.
+- Separate archive orchestration, process execution, listing, output validation and shared part streaming; simplify UI and CLI responsibilities.
+
 ## 0.2.3 · 2026-11-07
 
 - Visible EN/RU language switch in the toolbar, on the welcome screen and inside archives.

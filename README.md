@@ -15,6 +15,7 @@ created: "2026-11-07"
   <img alt="macOS 14 or later" src="https://img.shields.io/badge/macOS-14%2B-337C68?logo=apple&logoColor=white">
   <img alt="Apple Silicon and Intel" src="https://img.shields.io/badge/Universal-Apple%20Silicon%20%2B%20Intel-337C68">
   <img alt="English and Russian" src="https://img.shields.io/badge/Languages-EN%20%2F%20RU-337C68">
+  <a href="https://github.com/ai-babai/arcbox/actions/workflows/quality.yml"><img alt="Quality gate" src="https://github.com/ai-babai/arcbox/actions/workflows/quality.yml/badge.svg"></a>
   <a href="LICENSE"><img alt="MIT license" src="https://img.shields.io/badge/License-MIT-337C68"></a>
 </p>
 <p align="center">
@@ -137,7 +138,7 @@ Tools: `arcbox_list`, `arcbox_test`, `arcbox_create`, `arcbox_extract`, `arcbox_
 
 Build with Xcode Command Line Tools / Swift 5.9+ on macOS. The first build downloads a pinned official 7-Zip archive, verifies its SHA-256, and bundles the engine. There are no third-party Swift package dependencies. Release packaging requires a Git commit so that `release-info.json` records the exact source revision.
 
-[Development guide](docs/DEVELOPMENT.md) · [Product journey](docs/customer-journey.en.md) · [Contributing](CONTRIBUTING.md) · [Changelog](CHANGELOG.md) · [Security policy](SECURITY.md)
+[Quality contract](docs/QUALITY.md) · [Development guide](docs/DEVELOPMENT.md) · [Product journey](docs/customer-journey.en.md) · [Contributing](CONTRIBUTING.md) · [Changelog](CHANGELOG.md) · [Security policy](SECURITY.md)
 
 ## Current boundaries
 

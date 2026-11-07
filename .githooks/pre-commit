@@ -1,0 +1,18 @@
+#!/bin/bash
+set -euo pipefail
+cd "$(git rev-parse --show-toplevel)"
+require_matching_tree() {
+  if ! git diff --quiet || [ -n "$(git ls-files --others --exclude-standard)" ]; then
+    echo 'Stage all intended changes (or stash unrelated work) before the quality gate.' >&2
+    exit 1
+  fi
+}
+# Never validate one version and commit another, including edits made during the checks.
+require_matching_tree
+VALIDATED_TREE=$(git write-tree)
+./scripts/quality.sh --base HEAD
+require_matching_tree
+if [ "$VALIDATED_TREE" != "$(git write-tree)" ]; then
+  echo 'The staging area changed during validation. Run the commit again.' >&2
+  exit 1
+fi

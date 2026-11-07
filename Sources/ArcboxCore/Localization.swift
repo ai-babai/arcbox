@@ -9,11 +9,15 @@ public enum AppLanguage {
     public static var locale: Locale { Locale(identifier: code) }
     private static let resources: Bundle = {
         let executable = URL(fileURLWithPath: CommandLine.arguments[0]).resolvingSymlinksInPath()
-        let packaged = executable.deletingLastPathComponent().appendingPathComponent("../Resources/Arcbox_ArcboxCore.bundle").standardizedFileURL
+        let packaged = executable.deletingLastPathComponent().appendingPathComponent(
+            "../Resources/Arcbox_ArcboxCore.bundle"
+        ).standardizedFileURL
         return Bundle(url: packaged) ?? Bundle.module
     }()
     public static func text(_ key: String) -> String {
-        guard let path = resources.path(forResource: code, ofType: "lproj"), let bundle = Bundle(path: path) else { return key }
+        guard let path = resources.path(forResource: code, ofType: "lproj"), let bundle = Bundle(path: path) else {
+            return key
+        }
         return bundle.localizedString(forKey: key, value: key, table: "Localizable")
     }
 }

@@ -1,6 +1,6 @@
-import SwiftUI
 import AppKit
 import ArcboxCore
+import SwiftUI
 
 struct ResizableDivider: View {
     @Binding var width: Double
@@ -26,14 +26,19 @@ struct ResizableDivider: View {
                 if inside { NSCursor.resizeLeftRight.push() } else { NSCursor.pop() }
             }
             .onDisappear {
-                if hovering { hovering = false; NSCursor.pop() }
-            }
-            .gesture(DragGesture(minimumDistance: 2)
-                .onChanged { value in
-                    if dragStart == nil { dragStart = actualWidth }
-                    resize((dragStart ?? actualWidth) + direction * value.translation.width)
+                if hovering {
+                    hovering = false
+                    NSCursor.pop()
                 }
-                .onEnded { _ in dragStart = nil })
+            }
+            .gesture(
+                DragGesture(minimumDistance: 2)
+                    .onChanged { value in
+                        if dragStart == nil { dragStart = actualWidth }
+                        resize((dragStart ?? actualWidth) + direction * value.translation.width)
+                    }
+                    .onEnded { _ in dragStart = nil }
+            )
             .onTapGesture(count: 2) { resize(CGFloat(defaultWidth)) }
             .accessibilityElement()
             .accessibilityLabel(label)

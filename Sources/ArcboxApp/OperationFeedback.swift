@@ -1,5 +1,5 @@
-import SwiftUI
 import ArcboxCore
+import SwiftUI
 
 struct OperationStatus: View {
     let title: String
@@ -61,11 +61,14 @@ struct ArchiveLoading: View {
                 Text(name).font(.system(size: 23, weight: .semibold)).lineLimit(1).truncationMode(.middle)
             }
             Divider()
-            if reduceMotion { placeholders }
-            else {
+            if reduceMotion {
+                placeholders
+            } else {
                 placeholders.phaseAnimator([false, true]) { content, phase in
                     content.opacity(phase ? 1 : 0.35)
-                } animation: { _ in .easeInOut(duration: 1.1) }
+                } animation: { _ in
+                    .easeInOut(duration: 1.1)
+                }
             }
             Spacer(minLength: 0)
         }.padding(28).frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
