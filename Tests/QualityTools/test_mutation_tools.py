@@ -4,6 +4,7 @@ import contextlib
 import importlib.util
 import io
 import json
+import os
 from pathlib import Path
 import subprocess
 import tempfile
@@ -54,7 +55,7 @@ class MutationToolTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             root = self.prepare_script(directory)
             # No Sources/Tests: setup must fail without starting real mutation tests.
-            result = subprocess.run([str(root / "scripts/quality/mutation.sh")], capture_output=True, timeout=10)
+            result = self.run_script(root)
             self.assertNotEqual(result.returncode, 0)
             self.assertEqual(list((root / ".build/mutation").iterdir()), [])
 
@@ -64,7 +65,7 @@ class MutationToolTests(unittest.TestCase):
             lock = root / ".build/mutation/lock"
             lock.mkdir(parents=True)
             (lock / "owner").write_text("other run")
-            result = subprocess.run([str(root / "scripts/quality/mutation.sh")], capture_output=True, timeout=10)
+            result = self.run_script(root)
             self.assertNotEqual(result.returncode, 0)
             self.assertEqual((lock / "owner").read_text(), "other run")
 
@@ -75,4 +76,15 @@ class MutationToolTests(unittest.TestCase):
         target.parent.mkdir(parents=True)
         target.write_bytes(SCRIPT.read_bytes())
         target.chmod(0o755)
+        binary = root / "bin/muter"
+        binary.parent.mkdir()
+        binary.write_text("#!/bin/sh\nprintf '16\\n'\n")
+        binary.chmod(0o755)
         return root
+
+    @staticmethod
+    def run_script(root):
+        environment = dict(os.environ, PATH=f"{root / 'bin'}:{os.environ['PATH']}")
+        return subprocess.run(
+            [str(root / "scripts/quality/mutation.sh")], env=environment, capture_output=True, timeout=10
+        )

@@ -68,4 +68,4 @@ class RunnerTests(unittest.TestCase):
             self.assertEqual(metadata["architectures"], ["arm64", "x86_64"])
             self.assertFalse(metadata["notarized"])
             self.assertEqual(metadata["signing"], "ad-hoc")
-            self.assertEqual(metadata["sourceCommit"], gate.version("git", "rev-parse", "HEAD"))
+            self.assertEqual(metadata["sourceCommit"], gate.capture("git", "rev-parse", "HEAD"))

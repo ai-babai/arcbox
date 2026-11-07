@@ -15,7 +15,6 @@ created: "2026-11-07"
   <img alt="macOS 14 or later" src="https://img.shields.io/badge/macOS-14%2B-337C68?logo=apple&logoColor=white">
   <img alt="Apple Silicon and Intel" src="https://img.shields.io/badge/Universal-Apple%20Silicon%20%2B%20Intel-337C68">
   <img alt="English and Russian" src="https://img.shields.io/badge/Languages-EN%20%2F%20RU-337C68">
-  <a href="https://github.com/ai-babai/arcbox/actions/workflows/quality.yml"><img alt="Quality gate" src="https://github.com/ai-babai/arcbox/actions/workflows/quality.yml/badge.svg"></a>
   <a href="LICENSE"><img alt="MIT license" src="https://img.shields.io/badge/License-MIT-337C68"></a>
 </p>
 <p align="center">

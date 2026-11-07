@@ -7,11 +7,13 @@ created: "2026-11-07"
 
 ## Unreleased
 
+- Keep everyday checks fast and local; remove GitHub CI and mandatory PR/status requirements. Full build/test/coverage/mutation verification is available explicitly with `--full`.
+
 - Apply quality rules to the tooling itself: thin shell entry point, named Python gate phases, ShellCheck/shfmt for every shell script and hook, and Ruff for all Python helpers.
 - Release mutation locks on failed setup; preserve another run's lock and reject stale mutation reports.
 
 - Publish an EN/RU quality contract for DRY, KISS, YAGNI and SOLID/SRP.
-- Enforce formatting, size/safety lint, cyclomatic/cognitive complexity, core CRAP(line), diff coverage, module boundaries and translation parity before commits and in GitHub.
+- Enforce formatting, size/safety lint, cyclomatic/cognitive complexity, module boundaries and translation parity locally before commits. Coverage/CRAP, builds and mutations are separate full verification.
 - Add behavioral, SwiftCheck property, CLI/MCP and quality-gate contract tests, plus a scoped Muter check.
 - Separate archive orchestration, process execution, listing, output validation and shared part streaming; simplify UI and CLI responsibilities.
 

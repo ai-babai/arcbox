@@ -18,29 +18,31 @@ def run(*arguments, output=None):
     subprocess.run([str(value) for value in arguments], stdout=output, check=True)
 
 
-def version(*arguments):
+def capture(*arguments):
     return subprocess.check_output(arguments, text=True).strip()
 
 
-def check_environment():
-    commands = ("git", "swift", "xcrun", "swiftlint", "muter", "rg", "shellcheck", "shfmt")
-    executables = (PYTHON_TOOLS / "ruff", PYTHON_TOOLS / "diff-cover", TOOLS / "swift-complexity")
+def check_environment(full=False):
+    commands = ("git", "swift", "xcrun", "swiftlint", "rg", "shellcheck", "shfmt")
+    executables = (PYTHON_TOOLS / "ruff", TOOLS / "swift-complexity")
+    if full:
+        commands += ("muter",)
+        executables += (PYTHON_TOOLS / "diff-cover",)
     missing = [name for name in commands if shutil.which(name) is None]
     missing.extend(str(path) for path in executables if not os.access(path, os.X_OK))
     if missing:
         raise ValueError(f"Missing tools: {', '.join(missing)}. Run ./scripts/setup-quality.sh")
     expected = (
         (("swiftlint", "version"), "0.65.1"),
-        (("muter", "--version"), "16"),
         (("shfmt", "--version"), "3.14.1"),
     )
     for command, required in expected:
-        actual = version(*command)
+        actual = capture(*command)
         if actual != required:
             raise ValueError(f"{' '.join(command)}: expected {required}, found {actual}")
-    if "version: 0.11.0" not in version("shellcheck", "--version"):
+    if "version: 0.11.0" not in capture("shellcheck", "--version"):
         raise ValueError("ShellCheck 0.11.0 required")
-    if "Swift version 6.1.2" not in version("swift", "--version"):
+    if "Swift version 6.1.2" not in capture("swift", "--version"):
         raise ValueError("Select Xcode 16.4 (Swift 6.1.2)")
 
 
@@ -64,17 +66,27 @@ def check_sources():
         raise subprocess.CalledProcessError(result.returncode, result.args)
 
 
-def test_behavior():
+def check_complexity():
+    analyzer = TOOLS / "swift-complexity"
+    # The CLI threshold is inclusive: reject >=11 / >=16, allow <=10 / <=15.
+    run(analyzer, "Sources", "--recursive", "--cyclomatic-only", "--threshold", "11")
+    run(analyzer, "Sources", "--recursive", "--cognitive-only", "--threshold", "16")
+
+
+def test_tooling():
     run(sys.executable, "-m", "unittest", "discover", "-s", "Tests/QualityTools", "-v")
+
+
+def test_behavior():
     run("./scripts/fetch-engine.sh")
     run("swift", "build")
-    os.environ["ARCBOX_CLI"] = str(Path(version("swift", "build", "--show-bin-path")) / "arcbox")
+    os.environ["ARCBOX_CLI"] = str(Path(capture("swift", "build", "--show-bin-path")) / "arcbox")
     run(sys.executable, "-m", "unittest", "discover", "-s", "Tests/CLI", "-v")
     run("swift", "test", "--enable-code-coverage")
 
 
 def collect_coverage():
-    binaries = Path(version("swift", "build", "--show-bin-path"))
+    binaries = Path(capture("swift", "build", "--show-bin-path"))
     shutil.copyfile(binaries / "codecov/Arcbox.json", REPORTS / "coverage.json")
     with (REPORTS / "coverage.lcov").open("w") as output:
         run(
@@ -124,24 +136,33 @@ def execute_phases(phases):
 def main(arguments=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--base", default="origin/main", help="Git revision for changed-line coverage")
+    parser.add_argument(
+        "--full", action="store_true", help="Also build/test the app, measure coverage and run mutations"
+    )
     options = parser.parse_args(arguments)
     os.chdir(ROOT)
     try:
         run("git", "rev-parse", "--verify", "--end-of-options", f"{options.base}^{{commit}}", output=subprocess.DEVNULL)
         REPORTS.mkdir(parents=True, exist_ok=True)
-        execute_phases(
-            [
-                ("Toolchain and dependencies", check_environment),
-                ("Source formatting, lint and boundaries", check_sources),
-                ("Behavioral tests", test_behavior),
-                ("Complexity and coverage", lambda: check_metrics(options.base)),
-                ("Mutation testing: stream boundaries and archive paths", lambda: run("./scripts/quality/mutation.sh")),
-            ]
-        )
+        phases = [
+            ("Local tools", lambda: check_environment(options.full)),
+            ("Formatting, lint and module boundaries", check_sources),
+            ("Swift complexity", check_complexity),
+            ("Tooling behavior", test_tooling),
+        ]
+        if options.full:
+            phases.extend(
+                [
+                    ("Application build and tests", test_behavior),
+                    ("Coverage and CRAP", lambda: check_metrics(options.base)),
+                    ("Mutation testing", lambda: run("./scripts/quality/mutation.sh")),
+                ]
+            )
+        execute_phases(phases)
     except (ValueError, OSError, subprocess.CalledProcessError) as error:
         print(f"Quality gate failed: {error}", file=sys.stderr)
         return 1
-    print(f"Quality gate passed. Reports: {REPORTS}/")
+    print("Full quality gate passed." if options.full else "Local quality checks passed.")
     return 0
 
 

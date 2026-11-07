@@ -37,7 +37,7 @@ System-provided dialog chrome follows macOS language. App labels, prompts, statu
 
 Run `./scripts/setup-quality.sh` once, then `./scripts/quality.sh --base origin/main`. Read [the quality contract](QUALITY.md) ([Русский](QUALITY.ru.md)) for enforced thresholds, metric scope, reports and review principles. Persistent behavioral/property tests and CI were explicitly authorized on 2026-11-07. Tests create synthetic data in temporary directories; personal archives must never become fixtures.
 
-SwiftCheck is a test-only dependency; it is not linked into the shipped GUI or CLI. Commit `Package.resolved`. The core is coverage-gated; relevant GUI/CLI/MCP journeys still require explicit verification beyond compilation. The local pre-commit hook and GitHub run the same gate, including the scoped Muter check.
+SwiftCheck is a test-only dependency; it is not linked into the shipped GUI or CLI. Commit `Package.resolved`. The core is coverage-gated; relevant GUI/CLI/MCP journeys still require explicit verification beyond compilation. The pre-commit hook runs fast local checks. For behavior/core/UI changes and releases, use `./scripts/setup-quality.sh --full` and `./scripts/quality.sh --full --base origin/main`. GitHub CI and mandatory PR requirements are disabled.
 
 For packaging, verify each Mach-O architecture, ad-hoc signatures, the detached app's CLI from outside the repository, localization resources, DMG mount contents, and ZIP extraction. Verify SHA256SUMS after packaging.
 
@@ -45,7 +45,7 @@ For packaging, verify each Mach-O architecture, ad-hoc signatures, the detached 
 
 1. Finish changes and update both READMEs and CHANGELOG.
 2. Review the source tree for credentials, personal data and machine-specific paths.
-3. Pass the quality gate, commit the exact source revision and merge its passing PR.
+3. Pass the quality gate, run relevant full verification and commit the exact source revision.
 4. Run `./scripts/package-release.sh`.
 5. Review `dist/release/` and its `release-info.json`; verify the assets.
 6. Tag the source and attach DMG, ZIP, release-info and SHA256SUMS to the GitHub release.

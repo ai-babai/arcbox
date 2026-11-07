@@ -4,7 +4,8 @@ Explain the concrete problem, requirement and resulting behavior.
 
 ## Quality
 
-- [ ] `./scripts/quality.sh --base origin/main` passes; report key metrics/results.
+- [ ] Fast local `./scripts/quality.sh` passes.
+- [ ] Relevant behavioral checks performed; use `--full` for app/core changes and report results.
 - [ ] DRY: one owner for each rule; GUI/CLI/MCP reuse ArcboxCore.
 - [ ] KISS/YAGNI: simplest implementation for the current requirement.
 - [ ] SRP: changed modules have coherent responsibilities; no metric-only fragmentation.
