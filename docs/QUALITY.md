@@ -30,7 +30,8 @@ A change is ready only when `./scripts/quality.sh` passes and the review checkli
 | Behavior | All XCTest and SwiftCheck properties pass | Synthetic archives, parts, encryption, cancellation, unsafe paths, limits and atomic outputs |
 | Mutation sensitivity | All generated mutants in the declared scope killed; nonempty run | Muter 16; `ArchivePathPolicy.swift`, `PartStream.swift`; relational and logical connector replacement |
 | Translations | Matching keys and printf placeholders | plutil + catalog contract check; EN/RU |
-| Quality-tool Python | Ruff lint/format; McCabe ≤10 | Ruff 0.14.4; scripts/quality and Python tests |
+| Shell scripts | No lint diagnostics or format differences | ShellCheck 0.11.0 + shfmt 3.14.1 (Bash, two spaces, indented cases); all scripts/**/*.sh and .githooks/pre-commit |
+| Tooling Python | Ruff lint/format; McCabe ≤10 | Ruff 0.14.4; all Python in scripts and Python tests |
 | CLI/MCP contract | JSON results, exit codes, stdin passwords, multipart and MCP negotiation/tools pass | Python unittest through compiled arcbox |
 | Gate reliability | All gate contract tests pass | Python unittest; formula, LLVM region mapping, empty data, failures, graph cycles and exact staged-tree validation |
 
@@ -48,6 +49,14 @@ SwiftCheck generates 100 cases per property, with shrinking and failure replay s
 
 The mutation gate is deliberately bounded to two critical rules: unsafe archive names must fail; streaming must honor part boundaries. Its score is **not a project-wide mutation score**. Muter 16 misplaces mutations after non-ASCII source text in some files; the declared pure policy/streaming files are ASCII and were verified to compile under mutation. Expand the scope with behavioral tests and a verified tool upgrade, rather than reporting unsupported coverage as success. Timeouts, surviving mutants, empty runs and compilation/environment errors fail the gate.
 
+## Quality tooling follows the same principles
+
+`quality.sh` only forwards arguments and exit status to `scripts/quality/gate.py`. The runner separates environment validation, source checks, behavioral tests, coverage/complexity and mutations into named phases. Commands use argument arrays; a failed command stops later phases and returns a nonzero exit status.
+
+Python logic lives in `.py` files, including mutation configuration/report validation and release metadata, so Ruff checks it. Shell is reserved for tool setup, packaging and process/workspace cleanup. Mutation setup registers cleanup before allocating resources, preserves another run's lock and removes stale mutation reports before running Muter. Behavioral tests exercise these failure paths and literal argument passing.
+
+ShellCheck/shfmt gate the shell wrappers, including the entry point and Git hook; Ruff's McCabe limit gates Python orchestration as well as metric helpers. Swift complexity, CRAP and LLVM coverage remain scoped as declared above; shell lint is not presented as a cognitive-complexity or coverage measurement.
+
 ## Local workflow
 
 Use macOS and Xcode **16.4 / Swift 6.1.2**, selected through Xcode or `DEVELOPER_DIR`. Homebrew is needed for development tools, not for the shipped app.
@@ -58,7 +67,7 @@ xcrun swift-format format --in-place --recursive Sources Tests Package.swift
 ./scripts/quality.sh --base origin/main
 ```
 
-Setup installs SwiftLint, Muter and uv, downloads the pinned/checksummed complexity analyzer, resolves the committed SwiftPM lockfile, installs hash-locked diff-cover/Ruff into an ignored Python 3.12 virtual environment and enables the versioned Git hook. Versions are checked rather than silently substituted. If Homebrew offers a different version, use the documented version or propose a tool-version update; a passing check under an unreviewed version is insufficient.
+Setup installs SwiftLint, Muter, uv, ShellCheck and shfmt, downloads the pinned/checksummed complexity analyzer, resolves the committed SwiftPM lockfile, installs hash-locked diff-cover/Ruff into an ignored Python 3.12 virtual environment and enables the versioned Git hook. Versions are checked rather than silently substituted. If Homebrew offers a different version, use the documented version or propose a tool-version update; a passing check under an unreviewed version is insufficient.
 
 Before committing, stage the intended change. The hook refuses unstaged tracked changes or untracked files so the validated source matches the commit. It also refuses working-tree or staging changes made while checks are running. Stash unrelated work when needed. The hook runs the **same full gate**, including mutation tests, against HEAD; expect a few minutes. It does not modify source files. Reports and tool caches live under ignored `.build/`.
 
@@ -89,4 +98,4 @@ Passing tools cannot certify DRY, KISS, YAGNI or SOLID. These questions remain r
 
 ## Measurement references
 
-[SwiftLint](https://github.com/realm/SwiftLint), [swift-format](https://github.com/swiftlang/swift-format), [swift-complexity](https://github.com/fummicc1/swift-complexity), [LLVM coverage](https://llvm.org/docs/CommandGuide/llvm-cov.html), [diff-cover](https://github.com/Bachmann1234/diff_cover), [SwiftCheck](https://github.com/typelift/SwiftCheck), [Muter](https://github.com/muter-mutation-testing/muter), [CRAP author's description](https://www.artima.com/weblogs/viewpost.jsp?thread=210575).
+[ShellCheck](https://github.com/koalaman/shellcheck), [shfmt](https://github.com/mvdan/sh), [SwiftLint](https://github.com/realm/SwiftLint), [swift-format](https://github.com/swiftlang/swift-format), [swift-complexity](https://github.com/fummicc1/swift-complexity), [LLVM coverage](https://llvm.org/docs/CommandGuide/llvm-cov.html), [diff-cover](https://github.com/Bachmann1234/diff_cover), [SwiftCheck](https://github.com/typelift/SwiftCheck), [Muter](https://github.com/muter-mutation-testing/muter), [CRAP author's description](https://www.artima.com/weblogs/viewpost.jsp?thread=210575).

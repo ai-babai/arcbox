@@ -17,6 +17,7 @@ Start with [INDEX.md](INDEX.md) and [the development guide](docs/DEVELOPMENT.md)
 - Apply [the quality contract](docs/QUALITY.md): DRY, KISS, YAGNI and SOLID/SRP, plus the documented blocking metrics.
 - The maintainer authorized persistent behavioral/property tests, generated fixtures, mutation checks, hooks and CI on 2026-11-07. Add focused behavior tests for relevant changes; no personal archive fixtures.
 - Run `./scripts/quality.sh` before every commit. Install the hook with `./scripts/setup-quality.sh`. Do not bypass hooks, suppress violations or lower thresholds to pass. Fix failures before committing; PRs must pass `Quality / gate`.
+- Quality tooling is production code too: keep shell wrappers focused, use standalone Python modules for Python logic, and pass ShellCheck/shfmt plus Ruff.
 - A tool pass does not replace the human/agent checklist in the quality contract. Report metric scope and limitations honestly.
 - Do not commit personal archives, credentials, local paths or release binaries.
 - The repository is public under MIT by the owner's explicit decision. Visibility changes remain maintainer decisions.

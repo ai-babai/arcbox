@@ -37,9 +37,13 @@ codesign --force --sign - "$BUILT_APP/Contents/Resources/7zz"
 codesign --force --sign - "$BUILT_APP/Contents/MacOS/arcbox"
 codesign --force --sign - "$BUILT_APP"
 codesign --verify --deep --strict "$BUILT_APP"
-if [ -e "$APP" ] || [ -L "$APP" ]; then mv "$APP" "$STAGING/previous.app"; fi
+if [[ -e "$APP" || -L "$APP" ]]; then
+  mv "$APP" "$STAGING/previous.app"
+fi
 if ! mv "$BUILT_APP" "$APP"; then
-  if [ -e "$STAGING/previous.app" ] || [ -L "$STAGING/previous.app" ]; then mv "$STAGING/previous.app" "$APP"; fi
+  if [[ -e "$STAGING/previous.app" || -L "$STAGING/previous.app" ]]; then
+    mv "$STAGING/previous.app" "$APP"
+  fi
   exit 1
 fi
 ln -sfn Arcbox.app/Contents/MacOS/arcbox dist/arcbox

@@ -7,6 +7,9 @@ created: "2026-11-07"
 
 ## Unreleased
 
+- Apply quality rules to the tooling itself: thin shell entry point, named Python gate phases, ShellCheck/shfmt for every shell script and hook, and Ruff for all Python helpers.
+- Release mutation locks on failed setup; preserve another run's lock and reject stale mutation reports.
+
 - Publish an EN/RU quality contract for DRY, KISS, YAGNI and SOLID/SRP.
 - Enforce formatting, size/safety lint, cyclomatic/cognitive complexity, core CRAP(line), diff coverage, module boundaries and translation parity before commits and in GitHub.
 - Add behavioral, SwiftCheck property, CLI/MCP and quality-gate contract tests, plus a scoped Muter check.
