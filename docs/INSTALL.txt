@@ -1,0 +1,48 @@
+Arcbox 0.2.0
+macOS 14 Sonoma or later · Apple Silicon and Intel
+
+INSTALL
+
+Drag Arcbox.app to the Applications shortcut, then launch it from Applications.
+For the ZIP download, unzip it and move Arcbox.app to /Applications yourself.
+No Homebrew, Swift, or separate archive engine is required on the receiving Mac.
+
+FIRST LAUNCH
+
+This early release is signed ad hoc, not with an Apple Developer ID, and has
+not been notarized by Apple. macOS may block the first launch.
+
+If you trust the download and have verified its SHA-256:
+1. Try to open Arcbox once.
+2. Open System Settings > Privacy & Security.
+3. Find the blocked Arcbox entry and choose Open Anyway; authenticate if asked.
+
+Do not disable Gatekeeper or other system protections globally.
+On a managed Mac your administrator may need to approve the app.
+Apple's instructions: https://support.apple.com/102445
+
+USE
+
+Open: select an archive or any volume. Arcbox finds the rest.
+Create: choose files, format, and optionally "Разделить на части" (split into parts).
+Extract: choose the output folder. Arcbox reads all parts automatically.
+English and Russian: View > Language. System dialog chrome follows macOS.
+
+Sidebar: the button at the left of the toolbar or Control-Command-S.
+Agent tools: View/Вид > Инструменты агента, or Shift-Command-K.
+CLI: /Applications/Arcbox.app/Contents/MacOS/arcbox --help
+
+REMOVE
+
+Quit Arcbox and move /Applications/Arcbox.app to Trash.
+Your archives and extracted files are ordinary files and remain where you saved them.
+
+LICENSE
+
+Arcbox: MIT. Bundled 7-Zip 26.05: LGPL/BSD with the unRAR restriction.
+Complete third-party notices are inside Arcbox.app/Contents/Resources/7zip-license/.
+
+SUPPORT
+
+https://github.com/ai-babai/arcbox/issues
+This is a private repository; access requires an authorized GitHub account.

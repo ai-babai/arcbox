@@ -1,0 +1,23 @@
+name: Bug report
+description: Report a reproducible Arcbox problem.
+title: "[Bug] "
+body:
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Arcbox version, macOS version, Apple Silicon or Intel, archive format.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction
+      description: Steps, expected result, actual result. Use synthetic files; do not upload private archives or passwords.
+    validations:
+      required: true
+  - type: textarea
+    id: details
+    attributes:
+      label: Additional details
+      description: Sanitized errors or screenshots without personal paths or data.

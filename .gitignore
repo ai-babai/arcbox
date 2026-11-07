@@ -1,0 +1,5 @@
+.build/
+dist/
+.DS_Store
+vendor/7zip/
+vendor/7zip.tar.xz
