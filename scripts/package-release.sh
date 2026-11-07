@@ -10,7 +10,7 @@ trap 'rm -rf "$STAGING"' EXIT
 mkdir -p "$OUTPUT"
 codesign --verify --deep --strict "$APP"
 for binary in "$APP/Contents/MacOS/ArcboxDesktop" "$APP/Contents/MacOS/arcbox" "$APP/Contents/Resources/7zz"; do
-  lipo -verify_arch arm64 x86_64 "$binary"
+  lipo "$binary" -verify_arch arm64 x86_64
 done
 ditto "$APP" "$STAGING/Arcbox.app"
 ln -s /Applications "$STAGING/Applications"
